@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "C:\\Users\\Cihan\\anaconda3\\python.exe",
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_flask"]
+}
