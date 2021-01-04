@@ -1,0 +1,145 @@
+ {% extends 'base.html'%}
+
+ {% include 'header.html' %}
+
+ {% block title %} Home {% endblock %}
+
+ {%block body%} 
+ 
+ <div class="container">
+     <div class="row">
+         <div class="col md-12">
+
+            <div class='jumbotron p-3'>
+
+                <h2><b>Ogrencileri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#mymodal">Yeni ogrenci ekle</button> </h2>
+
+                <table class="table table-hover table-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>Firstname</th>
+                        <th>Lastname</th>
+                        <th>Age</th>
+                        <th>Relative</th>
+                        <th>Address</th>
+                        <th>Teachers</th>
+                        <th>Lectures</th>
+                    </tr>
+                    <tr>
+                        <td>170401021</td>
+                        <td>Cihan</td>
+                        <td>Kavuk</td>
+                        <td>21</td>
+                        <td>Egemen</td>
+                        <td>Fatih mah</td>
+                        <td>asdas dasdasd asdasd</td>
+                        <td>asd asd asd asd </td>
+                        <td>
+                            <a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit">Edit</a>
+                            <a href="" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Ogrenci ekleme-->
+
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                   <div class="modal-content">
+                      <div class="modal-header">
+              
+                         <h4 class="modal-title">Ogrenci Ekle</h4>
+                      </div>
+                      <div class="modal-body">
+              
+                         <form action="" method="POST">
+              
+              
+                            <div class="form-group">
+              
+                               <label>No:</label>
+                               <input type="number" class="form-control" name="no" required="1">
+              
+              
+                            </div>
+              
+              
+                             <div class="form-group">
+              
+              
+                               <label>First name:</label>
+                               <input type="text" class="form-control" name="fname" required="1">
+              
+              
+                            </div>
+              
+              
+                             <div class="form-group">
+              
+              
+                               <label>Last name:</label>
+                               <input type="text" class="form-control" name="lname" required="1">
+              
+              
+                            </div>
+
+                            <div class="form-group">
+              
+              
+                                <label>Age:</label>
+                                <input type="number" class="form-control" name="age" required="1">
+               
+               
+                             </div>
+
+                             <div class="form-group">
+              
+              
+                                <label>Relative:</label>
+                                <input type="text" class="form-control" name="relative" required="1">
+               
+               
+                             </div>
+
+                             <div class="form-group">
+              
+              
+                                <label>Address:</label>
+                                <input type="text" class="form-control" name="address" required="1">
+               
+               
+                             </div>
+                    
+              
+                            <div class="form-group">
+              
+              
+                               <button class="btn btn-primary" type="submit">Ekle</button>
+              
+              
+                            </div>
+
+                            <div class="modal-footer">
+ 
+ 
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                     
+                     
+                             </div>
+                     
+              
+              
+                         </form>
+              
+              
+                      </div>
+
+
+
+
+         </div>
+     </div>
+ </div>
+
+ {%endblock%}

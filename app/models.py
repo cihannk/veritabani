@@ -1,43 +1,67 @@
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+import os
+from sqlalchemy.orm import relationship
 
-from app import db, login_manager
+project_dir = os.path.dirname(os.path.abspath(__file__))
+database_file = "sqlite:///{}".format(os.path.join(project_dir, "ubys.db"))
 
-class Ogrenci(UserMixin, db.Model):
-    """ Ogrenci tablosu """
-    __tablename__ = 'ogrenciler'
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = database_file
+db = SQLAlchemy(app)
 
-    ogr_no = db.Column(db.Integer, primary_key=True)
-    ogr_firstname = db.Column(db.String(200), nullable= False)
-    ogr_lastname = db.Column(db.String(200), nullable= False)
-    ogr_age = db.Column(db.Integer, nullable= False)
-    ogr_relative = db.Column(db.String(200), nullable= True)
-    ogr_address = db.Column(db.String(200), nullable= False)
+# Many-To-Many icin yardimci tablo
+student_teacher = db.Table('StudentTeacher',
+        db.Column('student_no', db.Integer, db.ForeignKey('student.no')),
+        db.Column('teacher_no', db.Integer, db.ForeignKey('teacher.no')) )
 
-class Lecture(UserMixin, db.Model):
-    __tablename__ = 'lectures'
+student_lecture = db.Table('StudentLecture',
+        db.Column('student_no', db.Integer, db.ForeignKey('student.no')),
+        db.Column('lecture_no', db.Integer, db.ForeignKey('lecture.no')) )
 
-    lecture_teacher = db.Column(db.String(200), nullable= False)
-    lecture_credit = db.Column(db.Integer, nullable= False)
-    lecture_name = db.Column(db.String(200), primary_key= True)
+class Student(db.Model):
 
-class Teacher(UserMixin, db.Model):
-    __tablename__ = 'teacher'
+    no = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(200), nullable= False)
+    lastname = db.Column(db.String(200), nullable= False)
+    age = db.Column(db.Integer)
+    relative = db.Column(db.String(200))
+    address = db.Column(db.String(200))
+    teachers = db.relationship('Teacher', secondary=student_teacher, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
+    lectures = db.relationship('Lecture', secondary=student_lecture, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
 
-    teacher_no = db.Column(db.Integer, primary_key =True)
-    teacher_firstname = db.Column(db.String(200), nullable= False)
-    teacher_lastname = db.Column(db.String(200), nullable= False)
-    teacher_age = db.Integer(db.String(200), nullable= False)
-    teacher_profession = db.Column(db.String(200), nullable= False)
-    teacher_telno = db.Integer(db.String(200), nullable= False)
-    teacher_relative = db.Column(db.String(200), nullable= False)
-    teacher_address = db.Column(db.String(200), nullable= False)
+    def __repr__(self):
+        return "<Ogr-no: {}>".format(self.no)
 
-class Homework(UserMixin, db.Model):
-    __tablename__ = 'hw'
-    
-    hw_lecture = db.Column(db.String(200), primary_key= True)
-    hw_deadline = db.Column(db.String(200), nullable= False)
-    hw_type = db.Column(db.String(200), nullable= False)
-    hw_belonging = db.Column(db.String(200), nullable= False)
-    hw_point = db.Column(db.Integer, nullable= False)
+class Teacher(db.Model):
+
+    no = db.Column(db.Integer, primary_key =True)
+    firstname = db.Column(db.String(200), nullable= False)
+    lastname = db.Column(db.String(200), nullable= False)
+    age = db.Column(db.Integer)
+    profession = db.Column(db.String(200), nullable= False)
+    telno = db.Column(db.Integer)
+    relative = db.Column(db.String(200))
+    address = db.Column(db.String(200))
+    lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.no'))
+    lecture = db.relationship('Lecture', back_populates='teacher', uselist=False)
+
+
+class Lecture(db.Model):
+    no = db.Column(db.Integer, primary_key=True)
+    credit = db.Column(db.Integer, nullable= False)
+    name = db.Column(db.String(200), primary_key= True, nullable=False)
+    teacher = db.relationship('Teacher', back_populates = 'lecture', uselist=False)
+    homeworks = db.relationship('Homework', backref='lecturename', lazy='dynamic')
+
+
+class Homework(db.Model):
+    name = db.Column(db.String(200), nullable=False)
+    no = db.Column(db.Integer, primary_key =True)
+    deadline = db.Column(db.String(200))
+    point = db.Column(db.Integer, nullable= False)
+    lecture = db.Column(db.Integer, db.ForeignKey('lecture.no'))
+
+
+db.create_all()
+
