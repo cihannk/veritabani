@@ -2,6 +2,20 @@
 {% include 'header.html' %}
 {% block title %} Home {% endblock %}
 {%block body%} 
+<script>
+function donothing(){
+   console.log('hello')
+}
+function hide() {
+   window.setTimeout(donothing, 3000);
+   var x = document.getElementById("popup");
+   if (x.style.display === "none") {
+      x.style.display = "block";
+  } else {
+      x.style.display = "none";
+  }
+}
+</script>
 <div class="container">
    <div class="row">
       <div class="col md-12">
@@ -10,7 +24,8 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-success alert-dismissable" role='alert'>
+            <div id='popup' class="alert alert-success alert-dismissable" role='alert'>
+               <script>hide()</script>
                <button type='button' class='close' data-dismiss="alert" aria-label="close">
                <span aria-hidden="true">x</span>
                </button>
@@ -150,7 +165,8 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-success alert-dismissable" role='alert'>
+            <div class="alert alert-success alert-dismissable" id='popup' role='alert'>
+               <script>hide()</script>
                <button type='button' class='close' data-dismiss="alert" aria-label="close">
                <span aria-hidden="true">x</span>
                </button>
@@ -316,7 +332,8 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-success alert-dismissable" role='alert'>
+            <div class="alert alert-success alert-dismissable" id='popup' role='alert'>
+               <script>hide()</script>
                <button type='button' class='close' data-dismiss="alert" aria-label="close">
                <span aria-hidden="true">x</span>
                </button>
@@ -442,7 +459,8 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-success alert-dismissable" role='alert'>
+            <div class="alert alert-success alert-dismissable" id='popup' role='alert'>
+               <script>hide()</script>
                <button type='button' class='close' data-dismiss="alert" aria-label="close">
                <span aria-hidden="true">x</span>
                </button>

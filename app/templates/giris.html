@@ -6,19 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GIRIS</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script>
-    function redirect(){
-      var input = document.getElementById("inpt");
-      var password = input.value;
-      if (password == 'admin'){
-        window.location = '/'
-      }
-      else{
-        window.location = 'student.html'
-      }
-    }
-
-  </script>
 </head>
 
 <body>
@@ -33,11 +20,12 @@
     <div class="col md-12">
       <div class='jumbotron p-3'>
       <div class="mb-3">
-        <input name='login' type="password" class="form-control" id="inpt" placeholder="Ogrenci numaranızı veya Öğretmen şifresini girin ">
+        <form action="" method='post'>
+          <input name='login' type="password" class="form-control" placeholder="Ogrenci numaranızı veya Öğretmen şifresini girin ">
+          <hr>
+            <input class="btn btn-dark" type="submit" value="Login">
+        </form>
       </div>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button class="btn btn-primary me-md-2" type="button" onclick=redirect()>Giris</button>
-        </div>
     </div>
     </div>
   </div>

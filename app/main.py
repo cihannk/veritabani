@@ -1,26 +1,36 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from models import *
+num = None
+def readjs():
+    js = open(r'C:\Users\Cihan\Documents\GitHub\VTRepo\app\templates\main.js', 'r').readlines()
+    print(js)
 
-
-@app.route('/')
-def Index():
+@app.route('/admin')
+def Admin():
     all_data_students = Student.query.all()
     all_data_teachers = Teacher.query.all()
     all_data_lectures = Lecture.query.all()
     all_data_homeworks = Homework.query.all()
     return render_template('index.html', students=all_data_students, teachers=all_data_teachers, lectures=all_data_lectures, homeworks=all_data_homeworks)
 
-@app.route('/giris')
+@app.route('/', methods=['GET', 'POST'])
 def giris():
-    login = request.form.get('login')
-    if login == 'admin':
-        return redirect(url_for('Index'))
+    if request.method == 'POST':
+        if request.form['login'] != 'admin':
+            global num
+            num = request.form['login']
+            print('num',num)
+            return redirect(url_for('student'))
+        else:
+            return redirect(url_for('Admin'))
     return render_template('giris.html')
 
 @app.route('/student')
-def redirect():
-    return render_template('student.html')
+def student():
+    data = Student.query.filter_by(no=num).all()
+    all_data_students = Student.query.all()
+    return render_template('student.html', student=data)
 
 @app.route('/insert', methods=['POST'])
 def insert():
@@ -37,7 +47,7 @@ def insert():
             db.session.add(data)
             db.session.commit()
             flash("Ogrenci basariyla eklendi.")   
-            return redirect(url_for('Index'))
+            return redirect(url_for('Admin'))
         elif cls == 'Teacher':
             no = request.form.get('no') 
             fname = request.form.get('fname')
@@ -51,7 +61,7 @@ def insert():
             db.session.add(data)
             db.session.commit()
             flash("Ogretmen basariyla eklendi.")   
-            return redirect(url_for('Index'))
+            return redirect(url_for('Admin'))
         elif cls == 'Lecture':
             no = request.form.get('no') 
             credit = request.form.get('credit')
@@ -62,7 +72,7 @@ def insert():
             db.session.add(data)
             db.session.commit()
             flash("Ders basariyla eklendi.")   
-            return redirect(url_for('Index'))
+            return redirect(url_for('Admin'))
         else:
             no = request.form.get('no') 
             name = request.form.get('name')
@@ -72,7 +82,7 @@ def insert():
             db.session.add(data)
             db.session.commit()
             flash("Odev basariyla eklendi.")   
-            return redirect(url_for('Index'))
+            return redirect(url_for('Admin'))
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
@@ -110,7 +120,7 @@ def update():
         
         db.session.commit()
         flash("Basarıyla ogretmen eklendi")
-        return redirect(url_for('Index'))
+        return redirect(url_for('Admin'))
 @app.route('/delete/<cls>/<no>/', methods=['GET','POST'])
 def delete(no, cls):
     if cls == 'Student':
@@ -118,25 +128,25 @@ def delete(no, cls):
         db.session.delete(data)
         db.session.commit()
         flash('Ogrenci basariyla silindi.')
-        return(redirect(url_for('Index')))
+        return(redirect(url_for('Admin')))
     elif cls == 'Teacher':
         data = Teacher.query.get(no)
         db.session.delete(data)
         db.session.commit()
         flash('Ogretmen basariyla silindi.')
-        return(redirect(url_for('Index')))
+        return(redirect(url_for('Admin')))
     elif cls == 'Lecture':
         data = Lecture.query.get(no)
         db.session.delete(data)
         db.session.commit()
         flash('Ders basariyla silindi.')
-        return(redirect(url_for('Index')))
+        return(redirect(url_for('Admin')))
     else:
         data = Homework.query.get(no)
         db.session.delete(data)
         db.session.commit()
         flash('Odev basariyla silindi.')
-        return(redirect(url_for('Index')))
+        return(redirect(url_for('Admin')))
 
 if __name__ == "__main__":
     app.run(debug=True)    
