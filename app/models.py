@@ -7,7 +7,9 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "ubys.db"))
 
 app = Flask(__name__)
+app.secret_key = "secret key"
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Many-To-Many icin yardimci tablo
@@ -30,9 +32,6 @@ class Student(db.Model):
     teachers = db.relationship('Teacher', secondary=student_teacher, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
     lectures = db.relationship('Lecture', secondary=student_lecture, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
 
-    def __repr__(self):
-        return "<Ogr-no: {}>".format(self.no)
-
 class Teacher(db.Model):
 
     no = db.Column(db.Integer, primary_key =True)
@@ -50,7 +49,7 @@ class Teacher(db.Model):
 class Lecture(db.Model):
     no = db.Column(db.Integer, primary_key=True)
     credit = db.Column(db.Integer, nullable= False)
-    name = db.Column(db.String(200), primary_key= True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
     teacher = db.relationship('Teacher', back_populates = 'lecture', uselist=False)
     homeworks = db.relationship('Homework', backref='lecturename', lazy='dynamic')
 

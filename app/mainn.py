@@ -1,3 +1,5 @@
+'''
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from models import *
@@ -62,4 +64,5 @@ if __name__ == '__main__':
 
 @app.route("/renderogr")
 def renderogr(ogr):
-   return render_template('renderogr.html', students=ogr)
+   return render_template('renderogr.html', students=ogr) 
+   '''

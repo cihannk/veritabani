@@ -1,145 +1,561 @@
- {% extends 'base.html'%}
-
- {% include 'header.html' %}
-
- {% block title %} Home {% endblock %}
-
- {%block body%} 
- 
- <div class="container">
-     <div class="row">
-         <div class="col md-12">
-
-            <div class='jumbotron p-3'>
-
-                <h2><b>Ogrencileri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#mymodal">Yeni ogrenci ekle</button> </h2>
-
-                <table class="table table-hover table-dark">
-                    <tr>
-                        <th>No</th>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>Age</th>
-                        <th>Relative</th>
-                        <th>Address</th>
-                        <th>Teachers</th>
-                        <th>Lectures</th>
-                    </tr>
-                    <tr>
-                        <td>170401021</td>
-                        <td>Cihan</td>
-                        <td>Kavuk</td>
-                        <td>21</td>
-                        <td>Egemen</td>
-                        <td>Fatih mah</td>
-                        <td>asdas dasdasd asdasd</td>
-                        <td>asd asd asd asd </td>
-                        <td>
-                            <a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit">Edit</a>
-                            <a href="" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
-                        </td>
-                    </tr>
-                </table>
+{% extends 'base.html'%}
+{% include 'header.html' %}
+{% block title %} Home {% endblock %}
+{%block body%} 
+<div class="container">
+   <div class="row">
+      <div class="col md-12">
+         <div class='jumbotron p-3'>
+            <h2><b>Ogrencileri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#newstudent">Yeni ogrenci ekle</button> </h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissable" role='alert'>
+               <button type='button' class='close' data-dismiss="alert" aria-label="close">
+               <span aria-hidden="true">x</span>
+               </button>
+               {{message}}
             </div>
-
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <table class="table table-hover table-dark">
+               <tr>
+                  <th>No</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Age</th>
+                  <th>Relative</th>
+                  <th>Address</th>
+                  <th>Teachers</th>
+                  <th>Lectures</th>
+               </tr>
+               {% for row in students %}
+               <tr>
+                  <td>{{row.no}}</td>
+                  <td>{{row.firstname}}</td>
+                  <td>{{row.lastname}}</td>
+                  <td>{{row.age}}</td>
+                  <td>{{row.relative}}</td>
+                  <td>{{row.address}}</td>
+                  <td>{{row.teachers}}</td>
+                  <td>{{row.lectures}}</td>
+                  <td>
+                     <input type="hidden"  name="cls" value="Student">
+                     <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#editstudent{{row.no}}">Edit</a>
+                     <a href="/delete/Student/{{row.no}}" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
+                  </td>
+               </tr>
+               <!-- Ogrenci edit-->
+               <div id="editstudent{{row.no}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h4 class="modal-title">Ogrenci Edit</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{url_for('update')}}" method="POST">
+                              <div class="form-group">
+                                 <label>First name:</label>
+                                 <input type="hidden"  name="no" value="{{row.no}}">
+                                 <input type="hidden"  name="cls" value="Student">
+                                 <input type="text" class="form-control" name="fname" value="{{row.firstname}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Last name:</label>
+                                 <input type="text" class="form-control" name="lname" value="{{row.lastname}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Age:</label>
+                                 <input type="number" class="form-control" name="age" value="{{row.age}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Relative:</label>
+                                 <input type="text" class="form-control" name="relative" value="{{row.relative}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Address:</label>
+                                 <input type="text" class="form-control" name="address" value="{{row.address}}">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Ekle</button>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  {%endfor%}
+               </div>
+            </table>
             <!-- Ogrenci ekleme-->
-
-            <div id="mymodal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                   <div class="modal-content">
-                      <div class="modal-header">
-              
-                         <h4 class="modal-title">Ogrenci Ekle</h4>
-                      </div>
-                      <div class="modal-body">
-              
-                         <form action="" method="POST">
-              
-              
-                            <div class="form-group">
-              
-                               <label>No:</label>
-                               <input type="number" class="form-control" name="no" required="1">
-              
-              
-                            </div>
-              
-              
-                             <div class="form-group">
-              
-              
-                               <label>First name:</label>
-                               <input type="text" class="form-control" name="fname" required="1">
-              
-              
-                            </div>
-              
-              
-                             <div class="form-group">
-              
-              
-                               <label>Last name:</label>
-                               <input type="text" class="form-control" name="lname" required="1">
-              
-              
-                            </div>
-
-                            <div class="form-group">
-              
-              
-                                <label>Age:</label>
-                                <input type="number" class="form-control" name="age" required="1">
-               
-               
-                             </div>
-
-                             <div class="form-group">
-              
-              
-                                <label>Relative:</label>
-                                <input type="text" class="form-control" name="relative" required="1">
-               
-               
-                             </div>
-
-                             <div class="form-group">
-              
-              
-                                <label>Address:</label>
-                                <input type="text" class="form-control" name="address" required="1">
-               
-               
-                             </div>
-                    
-              
-                            <div class="form-group">
-              
-              
-                               <button class="btn btn-primary" type="submit">Ekle</button>
-              
-              
-                            </div>
-
-                            <div class="modal-footer">
- 
- 
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                     
-                     
-                             </div>
-                     
-              
-              
-                         </form>
-              
-              
-                      </div>
-
-
-
-
+            <div id="newstudent" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Ogrenci Ekle</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('insert')}}" method="POST">
+                              <input type="hidden"  name="cls" value="Student">
+                           <div class="form-group">
+                              <label>No:</label>
+                              <input type="number" class="form-control" name="no" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>First name:</label>
+                              <input type="text" class="form-control" name="fname" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Last name:</label>
+                              <input type="text" class="form-control" name="lname" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Age:</label>
+                              <input type="number" class="form-control" name="age" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Relative:</label>
+                              <input type="text" class="form-control" name="relative" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Address:</label>
+                              <input type="text" class="form-control" name="address" required="1">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Ekle</button>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
          </div>
-     </div>
- </div>
+      </div>
+   </div>
+</div>
 
- {%endblock%}
+<!--Ogretmen-->
+
+<div class="container">
+   <div class="row">
+      <div class="col md-12">
+         <div class='jumbotron p-3'>
+            <h2><b>Ogretmenleri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#newteacher">Yeni ogretmen ekle</button> </h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissable" role='alert'>
+               <button type='button' class='close' data-dismiss="alert" aria-label="close">
+               <span aria-hidden="true">x</span>
+               </button>
+               {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <table class="table table-hover table-dark">
+               <tr>
+                  <th>No</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Age</th>
+                  <th>Profession</th>
+                  <th>Telno</th>
+                  <th>Relative</th>
+                  <th>Address</th>
+                  <th>Lectures</th>
+               </tr>
+               {% for row in teachers %}
+               <tr>
+                  <td>{{row.no}}</td>
+                  <td>{{row.firstname}}</td>
+                  <td>{{row.lastname}}</td>
+                  <td>{{row.age}}</td>
+                  <td>{{row.profession}}</td>
+                  <td>{{row.telno}}</td>
+                  <td>{{row.relative}}</td>
+                  <td>{{row.address}}</td>
+                  <td>{{row.lecture}}</td>
+                  <td>
+                     <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#editteacher{{row.no}}">Edit</a>
+                     <a href="/delete/Teacher/{{row.no}}" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
+                     <input type="hidden"  name="cls" value="Teacher">
+                  </td>
+               </tr>
+               <!-- Ogretmen edit-->
+               <div id="editteacher{{row.no}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h4 class="modal-title">Ogretmen Edit</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{url_for('update')}}" method="POST">
+                              <div class="form-group">
+                                 <input type="hidden"  name="cls" value="Teacher">
+                                 <label>First name:</label>
+                                 <input type="hidden"  name="no" value="{{row.no}}">
+                                 <input type="text" class="form-control" name="fname" value="{{row.firstname}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Last name:</label>
+                                 <input type="text" class="form-control" name="lname" value="{{row.lastname}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Age:</label>
+                                 <input type="number" class="form-control" name="age" value="{{row.age}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Profession:</label>
+                                 <input type="text" class="form-control" name="profession" value="{{row.profession}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Tel no:</label>
+                                 <input type="text" class="form-control" name="telno" value="{{row.telno}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Relative:</label>
+                                 <input type="text" class="form-control" name="relative" value="{{row.relative}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Address:</label>
+                                 <input type="text" class="form-control" name="address" value="{{row.address}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Lectures:</label>
+                                 <input type="text" class="form-control" name="lecture" value="{{row.lecture}}">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Ekle</button>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  {%endfor%}
+               </div>
+            </table>
+            <!-- Ogretmen ekleme-->
+            <div id="newteacher" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Ogretmen Ekle</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('insert')}}" method="POST">
+                           <input type="hidden"  name="cls" value="Teacher">
+                           <div class="form-group">
+                              <label>No:</label>
+                              <input type="number" class="form-control" name="no" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>First name:</label>
+                              <input type="text" class="form-control" name="fname" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Last name:</label>
+                              <input type="text" class="form-control" name="lname" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Age:</label>
+                              <input type="number" class="form-control" name="age" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Profession:</label>
+                              <input type="text" class="form-control" name="profession" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Tel no:</label>
+                              <input type="number" class="form-control" name="telno" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Relative:</label>
+                              <input type="text" class="form-control" name="relative" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Address:</label>
+                              <input type="text" class="form-control" name="address" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Lectures :</label>
+                              <input type="text" class="form-control" name="lecture" required="1">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Ekle</button>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!--Dersler-->
+
+<div class="container">
+   <div class="row">
+      <div class="col md-12">
+         <div class='jumbotron p-3'>
+            <h2><b>Dersleri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#newlecture">Yeni ders ekle</button> </h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissable" role='alert'>
+               <button type='button' class='close' data-dismiss="alert" aria-label="close">
+               <span aria-hidden="true">x</span>
+               </button>
+               {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <table class="table table-hover table-dark">
+               <tr>
+                  <th>No</th>
+                  <th>Name</th>
+                  <th>Credit</th>
+                  <th>Teacher</th>
+                  <th>Homeworks</th>
+                  
+               </tr>
+               {% for row in lectures %}
+               <tr>
+                  <td>{{row.no}}</td>
+                  <td>{{row.name}}</td>
+                  <td>{{row.credit}}</td>
+                  <td>{{row.teacher}}</td>
+                  <td>{{row.homeworks}}</td>
+                  <td>
+                     <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#editlecture{{row.no}}">Edit</a>
+                     <a href="/delete/Lecture/{{row.no}}" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
+                  </td>
+               </tr>
+               <!-- Ders edit-->
+               <div id="editlecture{{row.no}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h4 class="modal-title">Ders Edit</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{url_for('update')}}" method="POST">
+                              <div class="form-group">
+                                 <input type="hidden"  name="cls" value="Lecture">
+                                 <label>Name:</label>
+                                 <input type="hidden"  name="no" value="{{row.no}}">
+                                 <input type="text" class="form-control" name="name" value="{{row.name}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Credit:</label>
+                                 <input type="text" class="form-control" name="credit" value="{{row.credit}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Teacher:</label>
+                                 <input type="text" class="form-control" name="teacher" value="{{row.teacher}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Homeworks:</label>
+                                 <input type="text" class="form-control" name="homeworks" value="{{row.homeworks}}">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Ekle</button>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  {%endfor%}
+               </div>
+            </table>
+            <!-- Ders ekleme-->
+            <div id="newlecture" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Ders Ekle</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('insert')}}" method="POST">
+                           <input type="hidden"  name="cls" value="Lecture">
+                           <div class="form-group">
+                              <label>No:</label>
+                              <input type="number" class="form-control" name="no" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Name:</label>
+                              <input type="text" class="form-control" name="name" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Credit:</label>
+                              <input type="number" class="form-control" name="credit" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Teacher:</label>
+                              <input type="text" class="form-control" name="teacher" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Homeworks:</label>
+                              <input type="text" class="form-control" name="homeworks" required="1">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Ekle</button>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!--Odev-->
+
+<div class="container">
+   <div class="row">
+      <div class="col md-12">
+         <div class='jumbotron p-3'>
+            <h2><b>Odevleri</b> Yonet<button type='button 'class='btn btn-success float-right' data-toggle="modal" data-target="#newhomework">Yeni odev ekle</button> </h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissable" role='alert'>
+               <button type='button' class='close' data-dismiss="alert" aria-label="close">
+               <span aria-hidden="true">x</span>
+               </button>
+               {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <table class="table table-hover table-dark">
+               <tr>
+                  <th>No</th>
+                  <th>Name</th>
+                  <th>Deadline</th>
+                  <th>Point</th>
+                  <th>Lecture</th>
+               </tr>
+               {% for row in homeworks %}
+               <tr>
+                  <td>{{row.no}}</td>
+                  <td>{{row.name}}</td>
+                  <td>{{row.deadline}}</td>
+                  <td>{{row.point}}</td>
+                  <td>{{row.lecture}}</td>
+                  <td>
+                     <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edithomework{{row.no}}">Edit</a>
+                     <a href="/delete/Homework/{{row.no}}" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
+                     <input type="hidden"  name="cls" value="Homework">
+                  </td>
+               </tr>
+               <!-- HW edit-->
+               <div id="edithomework{{row.no}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h4 class="modal-title">Odev Edit</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{url_for('update')}}" method="POST">
+                              <div class="form-group">
+                                 <input type="hidden"  name="cls" value="Homework">
+                                 <label>Name:</label>
+                                 <input type="hidden"  name="no" value="{{row.no}}">
+                                 <input type="text" class="form-control" name="name" value="{{row.name}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Deadline:</label>
+                                 <input type="text" class="form-control" name="deadline" value="{{row.deadline}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Point:</label>
+                                 <input type="number" class="form-control" name="point" value="{{row.point}}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Lecture:</label>
+                                 <input type="text" class="form-control" name="lecture" value="{{row.lecture}}">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Ekle</button>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  {%endfor%}
+               </div>
+            </table>
+            <!-- HW ekleme-->
+            <div id="newhomework" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Odev Ekle</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('insert')}}" method="POST">
+                           <input type="hidden"  name="cls" value="Homework">
+                           <div class="form-group">
+                              <label>No:</label>
+                              <input type="number" class="form-control" name="no" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Name:</label>
+                              <input type="text" class="form-control" name="name" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Deadline:</label>
+                              <input type="text" class="form-control" name="deadline" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Point:</label>
+                              <input type="number" class="form-control" name="point" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Lecture:</label>
+                              <input type="text" class="form-control" name="lecture" required="1">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Ekle</button>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+{%endblock%}
