@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, inspect
 from models import *
 num = None
 def readjs():
@@ -17,7 +17,7 @@ def Admin():
 @app.route('/', methods=['GET', 'POST'])
 def giris():
     if request.method == 'POST':
-        if request.form['login'] != 'admin':
+        if request.form['login'] != 'adminis123':
             global num
             num = request.form['login']
             print('num',num)
@@ -25,6 +25,9 @@ def giris():
         else:
             return redirect(url_for('Admin'))
     return render_template('giris.html')
+@app.route('/hata')
+def hata():
+    return render_template()
 
 @app.route('/student')
 def student():
@@ -43,7 +46,13 @@ def insert():
             age = request.form.get('age') 
             relative = request.form.get('relative') 
             address = request.form.get('address')
-            data = Student(no=no,firstname=fname, lastname=lname, age=age, relative=relative, address=address) 
+            data = Student(no=no,firstname=fname, lastname=lname, age=age, relative=relative, address=address)
+            for teacher in Teacher.query.all():
+                if request.form.getlist(teacher.firstname):
+                    data.teachers.append(teacher)
+            for lecture in Lecture.query.all():
+                 if request.form.getlist(lecture.name):
+                    data.lectures.append(lecture)
             db.session.add(data)
             db.session.commit()
             flash("Ogrenci basariyla eklendi.")   
@@ -58,6 +67,10 @@ def insert():
             profession = request.form.get('profession')
             telno = request.form.get('telno')
             data = Teacher(no=no,firstname=fname, lastname=lname, age=age, profession=profession, telno=telno, relative=relative, address=address) 
+            for lecture in Lecture.query.all():
+                if request.form.getlist(lecture.name):
+                    print('heyyo')
+                    data.lecture.append(lecture)
             db.session.add(data)
             db.session.commit()
             flash("Ogretmen basariyla eklendi.")   
@@ -67,8 +80,11 @@ def insert():
             credit = request.form.get('credit')
             name = request.form.get('name')
             teacher = request.form.get('teacher')
-            homeworks = request.form.get('homeworks')
             data = Lecture(no=no,name=name, credit=credit)
+            for hw in Homework.query.all():
+                if request.form.getlist(hw.name):
+                    print('heyyo')
+                    data.homeworks.append(hw)
             db.session.add(data)
             db.session.commit()
             flash("Ders basariyla eklendi.")   

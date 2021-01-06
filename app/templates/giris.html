@@ -21,8 +21,11 @@
       <div class='jumbotron p-3'>
       <div class="mb-3">
         <form action="" method='post'>
-          <input name='login' type="password" class="form-control" placeholder="Ogrenci numaranızı veya Öğretmen şifresini girin ">
-          <hr>
+          <label for="inputPassword5" class="form-label">Lutfen öğrenci numaranızı ya da admin şifrenizi girin</label>
+            <input type="password" name='login' id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+            <div id="passwordHelpBlock" class="form-text">
+            Inputunuz 8-16 karakterde olmalıdır. Özel karakter, boşluk ya da emoji içeremez.
+            </div>
             <input class="btn btn-dark" type="submit" value="Login">
         </form>
       </div>

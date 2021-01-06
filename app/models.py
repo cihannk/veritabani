@@ -43,7 +43,9 @@ class Teacher(db.Model):
     relative = db.Column(db.String(200))
     address = db.Column(db.String(200))
     lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.no'))
-    lecture = db.relationship('Lecture', back_populates='teacher', uselist=False)
+    lecture = db.relationship('Lecture', back_populates='teacher', uselist=True)
+    def __repr__(self):
+        return self.firstname
 
 
 class Lecture(db.Model):
@@ -52,6 +54,8 @@ class Lecture(db.Model):
     name = db.Column(db.String(200), nullable=False)
     teacher = db.relationship('Teacher', back_populates = 'lecture', uselist=False)
     homeworks = db.relationship('Homework', backref='lecturename', lazy='dynamic')
+    def __repr__(self):
+        return self.name
 
 
 class Homework(db.Model):
@@ -60,6 +64,8 @@ class Homework(db.Model):
     deadline = db.Column(db.String(200))
     point = db.Column(db.Integer, nullable= False)
     lecture = db.Column(db.Integer, db.ForeignKey('lecture.no'))
+    def __repr__(self):
+        return self.name
 
 
 db.create_all()
