@@ -30,8 +30,26 @@
                   <td>{{row.age}}</td>
                   <td>{{row.relative}}</td>
                   <td>{{row.address}}</td>
-                  <td>{{row.teachers}}</td>
-                  <td>{{row.lectures}}</td>
+                  <td>
+                     {% for tname in row.teachers.all()%}
+                     <ul class="list-group">
+                        <li class="list-group-item list-group-item-secondary">
+                           {{tname}}
+                        </li>
+                     </ul>
+                     {% endfor %}
+                  </td>
+                  
+                  <td>
+                     {% for lname in row.lectures.all()%}
+                     <ul class="list-group">
+                        <li class="list-group-item list-group-item-primary">
+                           {{lname}}
+                        </li>
+                     </ul>
+                     {% endfor %}
+                  </td>
                </tr>
+            </table>
                {% endfor %}          
 {%endblock%}

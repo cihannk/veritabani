@@ -2,9 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy, inspect
 from models import *
 num = None
-def readjs():
-    js = open(r'C:\Users\Cihan\Documents\GitHub\VTRepo\app\templates\main.js', 'r').readlines()
-    print(js)
 
 @app.route('/admin')
 def Admin():
@@ -27,13 +24,21 @@ def giris():
     return render_template('giris.html')
 @app.route('/hata')
 def hata():
-    return render_template()
+    return render_template('hata.html')
 
 @app.route('/student')
 def student():
     data = Student.query.filter_by(no=num).all()
     all_data_students = Student.query.all()
-    return render_template('student.html', student=data)
+    try:
+        return render_template('student.html', student=data)
+    except:
+        return redirect(url_for('hata'))
+'''
+Student.query.delete()
+Teacher.query.delete()
+Lecture.query.delete()
+Homework.query.delete()'''
 
 @app.route('/insert', methods=['POST'])
 def insert():
@@ -67,10 +72,10 @@ def insert():
             profession = request.form.get('profession')
             telno = request.form.get('telno')
             data = Teacher(no=no,firstname=fname, lastname=lname, age=age, profession=profession, telno=telno, relative=relative, address=address) 
-            for lecture in Lecture.query.all():
-                if request.form.getlist(lecture.name):
+            for hw in Homework.query.all():
+                if request.form.getlist(hw.name):
                     print('heyyo')
-                    data.lecture.append(lecture)
+                    data.homeworks.append(hw)
             db.session.add(data)
             db.session.commit()
             flash("Ogretmen basariyla eklendi.")   
@@ -79,12 +84,11 @@ def insert():
             no = request.form.get('no') 
             credit = request.form.get('credit')
             name = request.form.get('name')
-            teacher = request.form.get('teacher')
             data = Lecture(no=no,name=name, credit=credit)
-            for hw in Homework.query.all():
-                if request.form.getlist(hw.name):
+            for tc in Teacher.query.all():
+                if request.form.getlist(tc.firstname):
                     print('heyyo')
-                    data.homeworks.append(hw)
+                    data.teacher = Teacher.query.filter_by(firstname=tc.firstname).first()
             db.session.add(data)
             db.session.commit()
             flash("Ders basariyla eklendi.")   
@@ -95,6 +99,14 @@ def insert():
             deadline = request.form.get('deadline')
             point = request.form.get('point')
             data = Homework(no=no,name=name, deadline=deadline, point=point)
+            for lecture in Lecture.query.all():
+                if request.form.getlist(lecture.name):
+                    print('heyyo')
+                    data.lecturen = Lecture.query.filter_by(name=lecture.name).first()
+            '''for student in Student.query.all():
+                if request.form.getlist(student.firstname):
+                    print('heyyo')
+                    data.students.append(student)'''
             db.session.add(data)
             db.session.commit()
             flash("Odev basariyla eklendi.")   

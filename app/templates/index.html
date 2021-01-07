@@ -261,13 +261,11 @@ function hide() {
                   <td>{{row.relative}}</td>
                   <td>{{row.address}}</td>
                   <td>
-                     {% for lecture in row.lecture %}
                      <ul class="list-group">
                         <li class="list-group-item list-group-item-secondary">
-                           {{lecture}}
+                           {{row.lecture_name}}
                         </li>
                      </ul>
-                     {% endfor %}
                   </td>
                   <td>
                      <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#editteacher{{row.no}}">Edit</a>
@@ -381,12 +379,12 @@ function hide() {
                               <input type="text" class="form-control" name="address" required="1">
                            </div>
                            <div class="form-group">
-                              <label>Lectures :</label>
-                              {% for lecture in lectures %}
+                              <label>Homeworks :</label>
+                              {% for hw in homeworks %}
                               <div class="form-check">
-                                 <input class="form-check-input" name={{lecture.name}} type="checkbox" value="" id="flexCheckDefault">
+                                 <input class="form-check-input" name={{hw.name}} type="checkbox" value="" id="flexCheckDefault">
                                  <label class="form-check-label" for="flexCheckDefault">
-                                   {{lecture.name}}
+                                   {{hw.name}}
                                  </label>
                                </div>
                                {% endfor %}
@@ -433,7 +431,6 @@ function hide() {
                   <th>Name</th>
                   <th>Credit</th>
                   <th>Teacher</th>
-                  <th>Homeworks</th>
                   
                </tr>
                {% for row in lectures %}
@@ -441,15 +438,12 @@ function hide() {
                   <td>{{row.no}}</td>
                   <td>{{row.name}}</td>
                   <td>{{row.credit}}</td>
-                  <td>{{row.teacher}}</td>
                   <td>
-                     {% for hw in row.homeworks %}
                      <ul class="list-group">
                         <li class="list-group-item list-group-item-secondary">
-                           {{hw}}
+                           {{row.teacher}}
                         </li>
                      </ul>
-                     {% endfor %}
                   </td>
                   <td>
                      <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#editlecture{{row.no}}">Edit</a>
@@ -526,16 +520,12 @@ function hide() {
                               <input type="number" class="form-control" name="credit" required="1">
                            </div>
                            <div class="form-group">
-                              <label>Teacher:</label>
-                              <input type="text" class="form-control" name="teacher" required="1">
-                           </div>
-                           <div class="form-group">
-                              <label>Homeworks:</label>
-                              {% for hw in homeworks %}
+                              <label>Teachers:</label>
+                              {% for teacher in teachers %}
                               <div class="form-check">
-                                 <input class="form-check-input" name={{hw.name}} type="checkbox" value="" id="flexCheckDefault">
+                                 <input class="form-check-input" name="{{teacher.firstname}}"  type="checkbox" value="" id="flexCheckDefault">
                                  <label class="form-check-label" for="flexCheckDefault">
-                                   {{hw.name}}
+                                   {{teacher.firstname}}
                                  </label>
                                </div>
                                {% endfor %}
@@ -590,7 +580,13 @@ function hide() {
                   <td>{{row.name}}</td>
                   <td>{{row.deadline}}</td>
                   <td>{{row.point}}</td>
-                  <td>{{row.lecture}}</td>
+                  <td>
+                     <ul class="list-group">
+                        <li class="list-group-item list-group-item-secondary">
+                           {{row.lecturen}}
+                        </li>
+                     </ul>
+                  </td>
                   <td>
                      <a href="/update/{{row.no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edithomework{{row.no}}">Edit</a>
                      <a href="/delete/Homework/{{row.no}}" class="btn btn-danger btn-xs" onclick="return confirm('Emin misin?')">Sil</a>
@@ -674,9 +670,20 @@ function hide() {
                               <label>Lecture:</label>
                               {% for lecture in lectures %}
                               <div class="form-check">
-                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                 <input class="form-check-input" name='{{lecture.name}}' type="checkbox" value="" id="flexCheckDefault">
                                  <label class="form-check-label" for="flexCheckDefault">
                                    {{lecture.name}}
+                                 </label>
+                               </div>
+                               {% endfor %}
+                           </div>
+                           <div class="form-group">
+                              <label>Students:</label>
+                              {% for student in students %}
+                              <div class="form-check">
+                                 <input class="form-check-input" name='{{student.firstname}}' type="checkbox" value="" id="flexCheckDefault">
+                                 <label class="form-check-label" for="flexCheckDefault">
+                                   {{student.firstname}}
                                  </label>
                                </div>
                                {% endfor %}

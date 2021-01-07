@@ -21,6 +21,7 @@ student_lecture = db.Table('StudentLecture',
         db.Column('student_no', db.Integer, db.ForeignKey('student.no')),
         db.Column('lecture_no', db.Integer, db.ForeignKey('lecture.no')) )
 
+
 class Student(db.Model):
 
     no = db.Column(db.Integer, primary_key=True)
@@ -31,7 +32,8 @@ class Student(db.Model):
     address = db.Column(db.String(200))
     teachers = db.relationship('Teacher', secondary=student_teacher, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
     lectures = db.relationship('Lecture', secondary=student_lecture, lazy='dynamic', backref=db.backref('students', lazy='dynamic'))
-
+    def __repr__(self):
+        return self.firstname
 class Teacher(db.Model):
 
     no = db.Column(db.Integer, primary_key =True)
@@ -42,8 +44,9 @@ class Teacher(db.Model):
     telno = db.Column(db.Integer)
     relative = db.Column(db.String(200))
     address = db.Column(db.String(200))
-    lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.no'))
-    lecture = db.relationship('Lecture', back_populates='teacher', uselist=True)
+    lecture_name = db.Column(db.String(200), db.ForeignKey('lecture.name'))
+    lecture = db.relationship('Lecture', 
+                            back_populates='teacher', uselist=False)
     def __repr__(self):
         return self.firstname
 
@@ -52,8 +55,8 @@ class Lecture(db.Model):
     no = db.Column(db.Integer, primary_key=True)
     credit = db.Column(db.Integer, nullable= False)
     name = db.Column(db.String(200), nullable=False)
+    homeworks = relationship("Homework",backref="lecturen", lazy=True)
     teacher = db.relationship('Teacher', back_populates = 'lecture', uselist=False)
-    homeworks = db.relationship('Homework', backref='lecturename', lazy='dynamic')
     def __repr__(self):
         return self.name
 
@@ -63,7 +66,9 @@ class Homework(db.Model):
     no = db.Column(db.Integer, primary_key =True)
     deadline = db.Column(db.String(200))
     point = db.Column(db.Integer, nullable= False)
-    lecture = db.Column(db.Integer, db.ForeignKey('lecture.no'))
+    lecture = db.Column(db.Integer, db.ForeignKey('lecture.name'))
+    teacher_name = db.Column(db.Integer, db.ForeignKey('teacher.firstname'))
+    teacher = relationship("Teacher",backref="homeworks", lazy=True)
     def __repr__(self):
         return self.name
 
